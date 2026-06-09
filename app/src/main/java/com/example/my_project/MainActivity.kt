@@ -233,24 +233,16 @@ class MainActivity : AppCompatActivity() {
     private fun fetchLocation() {
         try {
             binding.tvLocationStatus.text = "현재 위치 정보 확인 중..."
-            
+
             // Check permissions explicitly to satisfy lint
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return
             }
 
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    updateLocationCoordinates(location)
-                } else {
-                    // In some cases (e.g. fresh emulator), lastLocation is null. Request a single fresh update.
-                    requestFreshLocation()
-                }
-            }.addOnFailureListener {
-                binding.tvLocationStatus.text = "위치 정보를 가져오는데 실패했습니다: ${it.localizedMessage}"
-                Toast.makeText(this, "위치 조회 실패. GPS 상태를 확인하세요.", Toast.LENGTH_SHORT).show()
-            }
+            // 에뮬레이터에서 lastLocation은 캐시된 미국 좌표를 반환할 수 있으므로
+            // 항상 새로운 위치를 요청하여 에뮬레이터에 설정한 좌표가 정확히 반영되도록 함
+            requestFreshLocation()
         } catch (e: SecurityException) {
             binding.tvLocationStatus.text = "보안 오류: 위치 권한을 확인해 주세요."
         }
