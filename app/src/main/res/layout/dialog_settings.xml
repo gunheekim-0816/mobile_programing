@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="추천 서비스를 실행하려면 아래 두 API 키를 설정해야 합니다. 입력한 키는 기기에 로컬로 안전하게 저장됩니다."
+        android:textColor="@color/grey_dark"
+        android:textSize="13sp"
+        android:layout_marginBottom="16dp"
+        android:lineSpacingMultiplier="1.2" />
+
+    <!-- Kakao API Key Input -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="카카오 REST API 키"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/et_kakao_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="16dp"
+        android:hint="카카오 REST API 키 입력"
+        android:background="@android:drawable/editbox_background"
+        android:padding="12dp"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:inputType="text" />
+
+    <!-- Gemini API Key Input -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Google Gemini API 키"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/et_gemini_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:hint="Gemini API 키 입력"
+        android:background="@android:drawable/editbox_background"
+        android:padding="12dp"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:inputType="text" />
+</LinearLayout>
