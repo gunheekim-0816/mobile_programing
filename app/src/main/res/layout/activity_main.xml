@@ -7,454 +7,765 @@
     android:background="@color/bg_cream"
     tools:context=".MainActivity">
 
-    <!-- Top Action Bar -->
-    <com.google.android.material.appbar.AppBarLayout
+    <!-- ========================================== -->
+    <!-- 1. 메인 지도 및 플로팅 제어 영역 (풀스크린) -->
+    <!-- ========================================== -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/orange_primary"
-        app:elevation="4dp">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!-- 풀스크린 카카오 맵 웹뷰 -->
+        <WebView
+            android:id="@+id/web_view_map"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@color/white">
+            android:layout_height="match_parent" />
 
-            <RelativeLayout
+        <!-- 상단 플로팅 주소 및 액션 바 (네이버 지도 검색창 형태) -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            app:strokeColor="@color/grey_light"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
+
+                <!-- 마커 아이콘 -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📍"
+                    android:textSize="20sp" />
+
+                <!-- 현재 동 주소 정보 -->
+                <TextView
+                    android:id="@+id/tv_confirmed_address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="위치를 조회하고 있습니다..."
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <!-- 수동 위치 검색 (🔎) -->
+                <ImageButton
+                    android:id="@+id/btn_location_manual_search"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="위치 검색"
+                    android:src="@android:drawable/ic_menu_search"
+                    app:tint="@color/orange_primary" />
+
+                <!-- 위치 다시 조회 (🔄) -->
+                <ImageButton
+                    android:id="@+id/btn_location_re_fetch"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="위치 새로고침"
+                    android:src="@android:drawable/stat_notify_sync"
+                    app:tint="@color/orange_primary" />
+
+                <!-- API 설정 (⚙️) -->
+                <ImageButton
+                    android:id="@+id/btn_settings"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="API 설정"
+                    android:src="@android:drawable/ic_menu_preferences"
+                    app:tint="@color/grey_medium" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 하단 중앙 플로팅 추천 시작 버튼 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_trigger_recommend"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="32dp"
+            android:text="오늘의 AI 맛집 추천 받기 🚀"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/orange_primary"
+            app:cornerRadius="28dp"
+            app:elevation="8dp" />
+
+        <!-- 최초 권한 요청 유도용 플로팅 카드 (권한이 없을 경우만 활성화) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layout_permission_guide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp"
+            android:visibility="gone"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:strokeColor="@color/grey_light"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="오늘도 뭐먹지니~"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:text="📍"
+                    android:textSize="48sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="주변 맛집을 찾기 위해 위치 권한이 필요합니다"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <ImageButton
-                    android:id="@+id/btn_settings"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="API 설정"
-                    android:src="@android:drawable/ic_menu_preferences"
-                    app:tint="@color/white" />
-            </RelativeLayout>
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:text="오늘도 뭐먹지니 앱은 현재 GPS 반경 2km 이내 음식점 중 AI 추천 서비스를 제공합니다. 시작하려면 버튼을 눌러주세요."
+                    android:textColor="@color/grey_dark"
+                    android:textSize="12sp" />
 
-    <!-- Main Content Scroll -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_permission_approve"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:text="위치 권한 허용 및 시작"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/orange_primary"
+                    app:cornerRadius="24dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </FrameLayout>
+
+    <!-- ========================================== -->
+    <!-- 2. 슬라이딩 하단 카드 바 (Persistent Bottom Sheet) -->
+    <!-- ========================================== -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@drawable/bg_bottom_sheet"
+        android:elevation="12dp"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="40dp">
 
-            <!-- Step 1: Location Section -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- 슬라이드 핸들바 (Drag Handle) -->
+            <View
+                android:layout_width="48dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/grey_light" />
+
+            <!-- ========================================== -->
+            <!-- 마법사 선택 화면 (Wizard) -->
+            <!-- ========================================== -->
+            <LinearLayout
+                android:id="@+id/layout_wizard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:strokeColor="@color/grey_light"
-                app:strokeWidth="1dp">
+                android:orientation="vertical"
+                android:visibility="gone">
 
+                <!-- 마법사 단계별 인디케이터 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_marginBottom="12dp"
+                    android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_wizard_progress_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1단계: 현재 위치 확인 📍"
+                        android:text="추천 조건 선택 (1 / 4 단계)"
                         android:textColor="@color/orange_dark"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_location_status"
+                    <ProgressBar
+                        android:id="@+id/wizard_progress_bar"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="6dp"
+                        android:max="4"
+                        android:progress="1"
+                        android:progressTint="@color/orange_primary" />
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/grey_light"
+                    app:strokeWidth="1dp">
+
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="12dp"
-                        android:text="위치 정보를 획득하지 못했습니다. (권한 필요)"
+                        android:padding="16dp">
+
+                        <!-- 인원 선택 -->
+                        <LinearLayout
+                            android:id="@+id/step_people"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="👥 몇 명이 식사하시나요? (필수)"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/group_people"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                app:singleSelection="true">
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_people_1"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1명 (혼밥)" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_people_2"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2명" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_people_3"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="3~4명" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_people_4"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="5~8명" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_people_5"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="9명 이상 (단체)" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_people_custom"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="✏️ 직접 입력" />
+                            </com.google.android.material.chip.ChipGroup>
+                        </LinearLayout>
+
+                        <!-- 예산 선택 -->
+                        <LinearLayout
+                            android:id="@+id/step_budget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="💰 1인당 예상 예산은? (필수)"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/group_budget"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                app:singleSelection="true">
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_budget_1"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1만원 이하" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_budget_2"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1~2만원" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_budget_3"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2~3만원" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_budget_4"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="3~5만원" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_budget_5"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="5~10만원" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_budget_6"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="10만원 이상" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_budget_custom"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="✏️ 직접 입력" />
+                            </com.google.android.material.chip.ChipGroup>
+                        </LinearLayout>
+
+                        <!-- 기분 선택 -->
+                        <LinearLayout
+                            android:id="@+id/step_mood"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="😋 오늘의 기분이나 맛의 종류는? (필수)"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/group_mood"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                app:singleSelection="true">
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_solid"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="든든한" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_light"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="가벼운" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_spicy"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="매운 음식" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_new"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="새로운 음식" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_korean"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="한식" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_western"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="양식" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_japanese"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="일식" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_chinese"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="중식" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_mood_custom"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="✏️ 직접 입력" />
+                            </com.google.android.material.chip.ChipGroup>
+                        </LinearLayout>
+
+                        <!-- 상황 선택 -->
+                        <LinearLayout
+                            android:id="@+id/step_situation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🍽️ 어떤 상황에서 식사하시나요? (필수)"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/group_situation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                app:singleSelection="true">
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_solo"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="혼밥" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_friend"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="친구 / 동료" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_date"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="연인 데이트" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_family"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="가족 외식" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_grandparents"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="조부모 모심" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_meeting_parents"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="상견례" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_business"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="비즈니스 접대" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_meeting"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="미팅 후 식사" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_travel"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="여행 중 식사" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chip_situation_custom"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="✏️ 직접 입력" />
+                            </com.google.android.material.chip.ChipGroup>
+                        </LinearLayout>
+                    </FrameLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 이전 / 다음 조작 버튼 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_wizard_prev"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:text="이전 단계"
                         android:textColor="@color/grey_dark"
                         android:textSize="14sp" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_get_location"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="현재 위치 조회"
-                        android:textColor="@color/orange_primary"
-                        app:strokeColor="@color/orange_primary" />
+                        android:id="@+id/btn_wizard_next"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:text="다음 단계 ➡️"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/orange_primary"
+                        app:cornerRadius="25dp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-            <!-- Step 2: User Conditions Section -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- ========================================== -->
+            <!-- 최종 확인 화면 (Final Confirm) -->
+            <!-- ========================================== -->
+            <LinearLayout
+                android:id="@+id/layout_final_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:strokeColor="@color/grey_light"
-                app:strokeWidth="1dp">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_marginVertical="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/grey_light"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2단계: 내 기분과 상황 선택 🤔"
-                        android:textColor="@color/orange_dark"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <!-- 인원 수 -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="👥 인원 수 (필수)"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/group_people"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        app:singleSelection="true">
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_people_1"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1명 (혼밥)" />
+                            android:text="선택하신 조건이 맞나요? 📝"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="12dp" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_people_2"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
+                        <TableLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="2명" />
+                            android:stretchColumns="1">
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_people_3"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3~4명" />
+                            <TableRow android:layout_marginVertical="4dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="📍 위치:  "
+                                    android:textColor="@color/grey_dark"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tv_summary_location"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black"
+                                    android:textSize="13sp"
+                                    tools:text="서울특별시 마포구 서교동" />
+                            </TableRow>
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_people_4"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="5~8명" />
+                            <TableRow android:layout_marginVertical="4dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="👥 인원:  "
+                                    android:textColor="@color/grey_dark"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tv_summary_people"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black"
+                                    android:textSize="13sp"
+                                    tools:text="3~4명" />
+                            </TableRow>
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_people_5"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="9명 이상 (단체)" />
+                            <TableRow android:layout_marginVertical="4dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="💰 예산:  "
+                                    android:textColor="@color/grey_dark"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tv_summary_budget"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black"
+                                    android:textSize="13sp"
+                                    tools:text="1~2만원" />
+                            </TableRow>
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_people_custom"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="✏️ 직접 입력" />
+                            <TableRow android:layout_marginVertical="4dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="😋 기분 / 맛:  "
+                                    android:textColor="@color/grey_dark"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tv_summary_mood"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black"
+                                    android:textSize="13sp"
+                                    tools:text="매운 음식" />
+                            </TableRow>
 
-                    </com.google.android.material.chip.ChipGroup>
+                            <TableRow android:layout_marginVertical="4dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🍽️ 상황:  "
+                                    android:textColor="@color/grey_dark"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tv_summary_situation"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black"
+                                    android:textSize="13sp"
+                                    tools:text="친구 / 동료" />
+                            </TableRow>
+                        </TableLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                    <!-- 예산 (인당) -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="💰 예산 (인당, 필수)"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                <!-- AI 추천 시작 버튼 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_final_recommend"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:text="🚀 AI 맛집 추천 시작하기"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/orange_primary"
+                    app:cornerRadius="28dp"
+                    app:elevation="4dp" />
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/group_budget"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        app:singleSelection="true">
+                <!-- 다시 선택하기 버튼 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_final_reset"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="✏️ 조건 다시 선택하기"
+                    android:textColor="@color/grey_medium"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_budget_1"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1만원 이하" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_budget_2"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1~2만원" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_budget_3"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2~3만원" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_budget_4"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3~5만원" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_budget_5"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="5~10만원" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_budget_6"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="10만원 이상" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_budget_custom"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="✏️ 직접 입력" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
-                    <!-- 기분 / 맛의 종류 -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="😋 오늘의 기분 / 맛의 종류 (필수)"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/group_mood"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        app:singleSelection="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_solid"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="든든한" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_light"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="가벼운" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_spicy"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="매운 음식" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_new"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="새로운 음식" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_korean"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="한식" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_western"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="양식" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_japanese"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="일식" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_chinese"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="중식" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_mood_custom"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="✏️ 직접 입력" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
-                    <!-- 식사 상황 -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="🍽️ 식사 상황 (필수)"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/group_situation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        app:singleSelection="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_solo"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="혼밥" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_friend"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="친구 / 동료" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_date"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="연인 데이트" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_family"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="가족 외식" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_grandparents"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="조부모 모심" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_meeting_parents"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="상견례" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_business"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="비즈니스 접대" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_meeting"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="미팅 후 식사" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_travel"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="여행 중 식사" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_situation_custom"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="✏️ 직접 입력" />
-
-                    </com.google.android.material.chip.ChipGroup>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Step 3: Recommend Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_recommend"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:text="3단계: AI 추천 식당 찾기 🚀"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:backgroundTint="@color/orange_primary"
-                app:cornerRadius="28dp"
-                app:elevation="4dp" />
-
-            <!-- Progress / Loading Section -->
+            <!-- ========================================== -->
+            <!-- 로딩 화면 (Progress Loading Card) -->
+            <!-- ========================================== -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_loading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginVertical="16dp"
                 android:visibility="gone"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardElevation="0dp"
                 app:strokeColor="@color/orange_light"
                 app:strokeWidth="1.5dp">
 
@@ -476,14 +787,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="잠시만 기다려주세요..."
+                        android:text="주변 맛집 정보를 분석하고 있습니다..."
                         android:textColor="@color/black"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Results Section -->
+            <!-- ========================================== -->
+            <!-- 3. 추천 결과 맛집 리스트 화면 (Results) -->
+            <!-- ========================================== -->
             <LinearLayout
                 android:id="@+id/layout_results"
                 android:layout_width="match_parent"
@@ -494,19 +807,33 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="✨ AI 맞춤 추천 식당 (최대 3개)"
+                    android:layout_marginBottom="8dp"
+                    android:text="✨ AI 선정 인기 맛집 TOP 3"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <!-- 음식점 리스트 RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_restaurants"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/item_restaurant" />
+
+                <!-- 처음으로 버튼 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start_over"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:text="🔄 다시 추천 받기"
+                    android:textColor="@color/orange_primary"
+                    app:strokeColor="@color/orange_primary" />
             </LinearLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

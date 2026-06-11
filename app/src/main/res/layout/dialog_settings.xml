@@ -36,6 +36,36 @@
         android:singleLine="true"
         android:inputType="text" />
 
+    <!-- Kakao JavaScript Key Input -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="카카오 JavaScript 키 (지도용)"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/et_kakao_js_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="8dp"
+        android:hint="카카오 JavaScript 키 입력"
+        android:background="@android:drawable/editbox_background"
+        android:padding="12dp"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="* 주의: 카카오 개발자 센터의 [플랫폼 키 > Web]에서 사이트 도메인에 'http://localhost'가 추가되어야 지도가 작동합니다."
+        android:textColor="@color/orange_dark"
+        android:textSize="11sp"
+        android:layout_marginBottom="16dp" />
+
     <!-- Gemini API Key Input -->
     <TextView
         android:layout_width="wrap_content"

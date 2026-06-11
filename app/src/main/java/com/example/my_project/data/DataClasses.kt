@@ -65,5 +65,38 @@ data class RecommendedRestaurant(
     val address: String,
     val phone: String,
     val reason: String,
-    val url: String
+    val url: String,
+    val latitude: Double,
+    val longitude: Double
+)
+
+// --- Kakao Coordinate-to-Address Models ---
+data class KakaoCoord2AddressResponse(
+    @SerializedName("documents") val documents: List<KakaoAddressDocument>
+)
+
+data class KakaoAddressDocument(
+    @SerializedName("road_address") val roadAddress: KakaoRoadAddress?,
+    @SerializedName("address") val address: KakaoAddress?
+)
+
+data class KakaoRoadAddress(
+    @SerializedName("address_name") val addressName: String
+)
+
+data class KakaoAddress(
+    @SerializedName("address_name") val addressName: String
+)
+
+// --- Kakao Keyword Location Search Models ---
+data class KakaoKeywordResponse(
+    @SerializedName("documents") val documents: List<KakaoKeywordDocument>
+)
+
+data class KakaoKeywordDocument(
+    @SerializedName("place_name") val placeName: String,
+    @SerializedName("address_name") val addressName: String,
+    @SerializedName("road_address_name") val roadAddressName: String,
+    @SerializedName("x") val x: String,
+    @SerializedName("y") val y: String
 )

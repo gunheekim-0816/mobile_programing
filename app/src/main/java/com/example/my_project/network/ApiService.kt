@@ -1,8 +1,6 @@
 package com.example.my_project.network
 
-import com.example.my_project.data.GeminiRequest
-import com.example.my_project.data.GeminiResponse
-import com.example.my_project.data.KakaoSearchResponse
+import com.example.my_project.data.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,6 +19,20 @@ interface KakaoApiService {
         @Query("sort") sort: String = "distance",
         @Query("size") size: Int = 15
     ): KakaoSearchResponse
+
+    @GET("v2/local/geo/coord2address.json")
+    suspend fun coord2Address(
+        @Header("Authorization") authorizationHeader: String,
+        @Query("x") longitude: String,
+        @Query("y") latitude: String
+    ): KakaoCoord2AddressResponse
+
+    @GET("v2/local/search/keyword.json")
+    suspend fun searchKeyword(
+        @Header("Authorization") authorizationHeader: String,
+        @Query("query") query: String,
+        @Query("size") size: Int = 10
+    ): KakaoKeywordResponse
 }
 
 interface GeminiApiService {
